@@ -10,26 +10,30 @@ import java.net.Socket;
 
 public class Server {
 
-	public static void main(String[] args) throws IOException, InterruptedException {
+	public static void main(String[] args) throws IOException, InterruptedException {			
 		ServerSocket servSocket = new ServerSocket(2500);
 		System.out.println("Starting Up...");
-		
-		try (Socket s = servSocket.accept()) {
-			System.out.println("Connection recieved");
-			
-			InputStream sockIn = s.getInputStream();
-			BufferedReader sockReader = new BufferedReader(new InputStreamReader(sockIn));
-			String line = sockReader.readLine();
-			System.out.println("Read the line \"" + line + "\"");
-			
-			PrintStream sockOut = new PrintStream(s.getOutputStream());
-			sockOut.println(line);
-			System.out.println("Echoed the line back to the client");
-			Thread.sleep(1000);
-			sockOut.flush();
-			
-			System.out.println("Closing connection");
-			servSocket.close();
+
+		while (true) {
+			try (Socket s = servSocket.accept()) {
+				System.out.println("Connection recieved");
+
+				// InputStream sockIn = s.getInputStream();
+				// BufferedReader sockReader = new BufferedReader(new
+				// InputStreamReader(sockIn));
+				// String line = sockReader.readLine();
+				// System.out.println("Read the line \"" + line + "\"");
+				//
+				// PrintStream sockOut = new PrintStream(s.getOutputStream());
+				// sockOut.println(line);
+				// System.out.println("Echoed the line back to the client");
+
+				// Thread.sleep(1000);
+				// sockOut.flush();
+
+//				System.out.println("Closing connection");
+//				servSocket.close();
+			}
 		}
 	}
 }
