@@ -45,7 +45,7 @@ public class Server {
 					System.out.println("Request Received:\n\t  " + request);
 				}
 
-				sleep();
+				//sleep();
 //				sockOut.flush();
 //				System.out.println("Closing connection");
 //				servSocket.close();
@@ -57,7 +57,7 @@ public class Server {
 		BufferedReader sockReader = new BufferedReader(new InputStreamReader(sockIn));
 		String requestLine = "";
 		String line = "";
-		boolean run = true;
+		int c = 0;
 		line = sockReader.readLine();
 		requestLine += line;
 

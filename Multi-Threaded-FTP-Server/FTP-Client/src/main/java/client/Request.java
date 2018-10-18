@@ -52,11 +52,15 @@ public class Request extends Thread {
 		if (request != null && request != "") {
 			try (Socket sock = new Socket("localhost", 2500)) {
 				try (PrintStream out = new PrintStream(sock.getOutputStream())) {
-					out.println(request);
-					BufferedReader in = new BufferedReader(new InputStreamReader(sock.getInputStream()));
-					String line = in.readLine();
-					System.out.println("Server said: \"" + line + "\"");
+
+					if (request != null) {
+						out.println(request);
+						BufferedReader in = new BufferedReader(new InputStreamReader(sock.getInputStream()));
+						String line = in.readLine();
+						System.out.println("Server said: \"" + line + "\"");
+					}
 				}
+				System.out.println("Reset");
 			}
 		}
 		sessionEnded = true;

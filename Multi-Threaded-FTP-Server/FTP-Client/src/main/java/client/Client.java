@@ -26,7 +26,7 @@ public class Client {
 		}
 	}
 
-	private static void fileRequest(Socket sock) throws UnknownHostException, IOException {
+	private static void fileRequest(Socket socket) throws UnknownHostException, IOException {
 		fileService = Executors.newFixedThreadPool(MAX_REQUEST);
 		boolean run = true;
 		int counter = 0;
@@ -34,7 +34,7 @@ public class Client {
 		while (run)
 
 		{
-			Request r = new Request(sock);
+			Request r = new Request(socket);
 			fileService.submit(() -> r.run());
 			System.out.println();
 			if (r.sessionEnded == true) {
