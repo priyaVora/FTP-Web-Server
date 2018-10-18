@@ -22,11 +22,11 @@ public class Client {
 		try (Socket sock = new Socket("localhost", 2500)) {
 			System.out.println("Client: connection established");
 			sleep();
+			fileRequest(sock);
 		}
-		fileRequest();
 	}
 
-	private static void fileRequest() throws UnknownHostException, IOException {
+	private static void fileRequest(Socket sock) throws UnknownHostException, IOException {
 		fileService = Executors.newFixedThreadPool(MAX_REQUEST);
 		boolean run = true;
 		int counter = 0;
@@ -34,7 +34,7 @@ public class Client {
 		while (run)
 
 		{
-			Request r = new Request();
+			Request r = new Request(sock);
 			fileService.submit(() -> r.run());
 			System.out.println();
 			if (r.sessionEnded == true) {

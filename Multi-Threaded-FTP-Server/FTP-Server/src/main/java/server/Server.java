@@ -9,6 +9,7 @@ import java.io.InputStreamReader;
 import java.io.PrintStream;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.nio.channels.SocketChannel;
 import java.util.Random;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -36,41 +37,40 @@ public class Server {
 		while (true) {
 			try (Socket s = servSocket.accept()) {
 				System.out.println("Server Accepts Connection");
-				System.out.println("Receives Request");
-				System.out.println();
+				System.out.println("Server Receives Request");
 
-				String line = readRequest(s);
+				InputStream sockIn = s.getInputStream();
+				String request = readRequest(sockIn);
+				if (request != null) {
+					System.out.println("Request Received:\n\t  " + request);
+				}
 
-				System.out.println("Reading File: \n\n");
-				String fileContent = readFile(
-						"/home/priya/Personal Workspace/FTP-Web-Server/Multi-Threaded-FTP-Server/FTP-Server/src/main/java/serverFiles/file");
-				System.out.println("File Content: \n\n" + fileContent);
 				sleep();
 //				sockOut.flush();
-
 //				System.out.println("Closing connection");
 //				servSocket.close();
 			}
 		}
 	}
 
-	public static String readRequest(Socket s) {
-		InputStream sockIn = null;
-		try {
-			sockIn = s.getInputStream();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+	public static String readRequest(InputStream sockIn) throws IOException {
 		BufferedReader sockReader = new BufferedReader(new InputStreamReader(sockIn));
-		String line = null;
-		try {
-			line = sockReader.readLine();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		String requestLine = "";
+		String line = "";
+		boolean run = true;
+		line = sockReader.readLine();
+		while (line != null) {
+			try {
+				line = sockReader.readLine();
+				requestLine += line;
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
 		}
-		return line;
+
+		return requestLine;
 	}
 
 	public static String readFile(String filePath) {

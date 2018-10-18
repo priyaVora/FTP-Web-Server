@@ -32,10 +32,6 @@ public class Response extends Thread {
 		session = true;
 	}
 
-	public void readFile(String filename) {
-
-	}
-
 	public void respond() {
 		String response = "";
 		sendResponse();

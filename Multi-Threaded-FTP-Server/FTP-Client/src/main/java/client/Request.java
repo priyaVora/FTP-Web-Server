@@ -1,9 +1,11 @@
 package client;
 
+import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintStream;
+import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -18,12 +20,14 @@ public class Request extends Thread {
 	private static Object Locked = new Object();
 	private static Random gen = new Random();
 	boolean sessionEnded = false;
+	private Socket socket;
 
 	List<String> listOfFilePaths = new ArrayList<String>();
 
 	List<String> listOfFileNames = new ArrayList<String>();
 
-	public Request() {
+	public Request(Socket s) {
+		this.socket = s;
 		setFilePaths();
 
 	}
@@ -31,14 +35,30 @@ public class Request extends Thread {
 	@Override
 	public void run() {
 		synchronized (Locked) {
-			requestSession();
+			try {
+				requestSession();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 		Locked = true;
 	}
 
-	private void requestSession() {
+	private void requestSession() throws IOException {
 		sessionEnded = false;
-		makeRequest();
+		String request = makeRequest();
+
+		if (request != null && request != "") {
+			try (Socket sock = new Socket("localhost", 2500)) {
+				try (PrintStream out = new PrintStream(sock.getOutputStream())) {
+					out.println(request);
+					BufferedReader in = new BufferedReader(new InputStreamReader(sock.getInputStream()));
+					String line = in.readLine();
+					System.out.println("Server said: \"" + line + "\"");
+				}
+			}
+		}
 		sessionEnded = true;
 	}
 
@@ -86,7 +106,7 @@ public class Request extends Thread {
 		}
 	}
 
-	public String makeRequest() {
+	public String makeRequest() throws IOException {
 		int randomRequest = gen.nextInt(2);
 		String request = "Invalid Request";
 		int randomFile = gen.nextInt(listOfFileNames.size());
