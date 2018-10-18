@@ -17,7 +17,7 @@ import java.util.concurrent.Semaphore;
 public class Server {
 
 	final static int CLIENTS = 20;
-	final static int MAX_FILE_PROCESS = 3;
+	final static int MAX_FILE_PROCESS = 25;
 
 	private static ExecutorService FTP_service;
 	private static Semaphore serverAcceptedFiles = new Semaphore(MAX_FILE_PROCESS);
@@ -41,17 +41,12 @@ public class Server {
 
 				String line = readRequest(s);
 
-				PrintStream sockOut = respondToClient(line, s);
 				System.out.println("Reading File: \n\n");
-				readFile(
+				String fileContent = readFile(
 						"/home/priya/Personal Workspace/FTP-Web-Server/Multi-Threaded-FTP-Server/FTP-Server/src/main/java/serverFiles/file");
-				try {
-					Thread.sleep(1000);
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				sockOut.flush();
+				System.out.println("File Content: \n\n" + fileContent);
+				sleep();
+//				sockOut.flush();
 
 //				System.out.println("Closing connection");
 //				servSocket.close();
@@ -83,8 +78,8 @@ public class Server {
 		try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
 			String sCurrentLine;
 			while ((sCurrentLine = br.readLine()) != null) {
-				System.out.println(sCurrentLine);
 				fileContent += sCurrentLine;
+				fileContent += "\n";
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -93,21 +88,12 @@ public class Server {
 		return fileContent;
 	}
 
-	public String makeResponse() {
-			
-		
-		return null;
-	}
-
-	public static PrintStream respondToClient(String line, Socket s) {
-		PrintStream sockOut = null;
+	private static void sleep() {
 		try {
-			sockOut = new PrintStream(s.getOutputStream());
-		} catch (IOException e) {
+			Thread.sleep(1000);
+		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		sockOut.println(line);
-		return sockOut;
 	}
 }
