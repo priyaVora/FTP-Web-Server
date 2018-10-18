@@ -2,6 +2,7 @@ package server;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -38,15 +39,12 @@ public class Server {
 				System.out.println("Receives Request");
 				System.out.println();
 
-				InputStream sockIn = s.getInputStream();
-				BufferedReader sockReader = new BufferedReader(new InputStreamReader(sockIn));
-				String line = sockReader.readLine();
-				System.out.println("Read the line \"" + line + "\"");
+				String line = readRequest(s);
 
-				PrintStream sockOut = new PrintStream(s.getOutputStream());
-				sockOut.println(line);
-				System.out.println("Echoed the line back to the client");
-
+				PrintStream sockOut = respondToClient(line, s);
+				System.out.println("Reading File: \n\n");
+				readFile(
+						"/home/priya/Personal Workspace/FTP-Web-Server/Multi-Threaded-FTP-Server/FTP-Server/src/main/java/serverFiles/file");
 				try {
 					Thread.sleep(1000);
 				} catch (InterruptedException e) {
@@ -61,7 +59,55 @@ public class Server {
 		}
 	}
 
-	public static void readRequest() {
+	public static String readRequest(Socket s) {
+		InputStream sockIn = null;
+		try {
+			sockIn = s.getInputStream();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		BufferedReader sockReader = new BufferedReader(new InputStreamReader(sockIn));
+		String line = null;
+		try {
+			line = sockReader.readLine();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return line;
+	}
 
+	public static String readFile(String filePath) {
+		String fileContent = "";
+		try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
+			String sCurrentLine;
+			while ((sCurrentLine = br.readLine()) != null) {
+				System.out.println(sCurrentLine);
+				fileContent += sCurrentLine;
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		return fileContent;
+	}
+
+	public String makeResponse() {
+			
+		
+		return null;
+	}
+
+	public static PrintStream respondToClient(String line, Socket s) {
+		PrintStream sockOut = null;
+		try {
+			sockOut = new PrintStream(s.getOutputStream());
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		sockOut.println(line);
+		return sockOut;
 	}
 }

@@ -45,7 +45,6 @@ public class Client {
 		{
 			Request r = new Request();
 			fileService.submit(() -> r.run());
-			sleep();
 			System.out.println();
 			if (r.sessionEnded == true) {
 				System.out.println("# " + r.getId() + " - request is processed.");
