@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.io.PrintStream;
 import java.net.Socket;
 import java.util.ArrayList;
@@ -29,7 +30,6 @@ public class Request extends Thread {
 	public Request(Socket s) {
 		this.socket = s;
 		setFilePaths();
-
 	}
 
 	@Override
@@ -49,21 +49,14 @@ public class Request extends Thread {
 		sessionEnded = false;
 		String request = makeRequest();
 
-		if (request != null && request != "") {
-			try (Socket sock = new Socket("localhost", 2500)) {
-				try (PrintStream out = new PrintStream(sock.getOutputStream())) {
+		sendRequestToServer(request);
 
-					if (request != null) {
-						out.println(request);
-						BufferedReader in = new BufferedReader(new InputStreamReader(sock.getInputStream()));
-						String line = in.readLine();
-						System.out.println("Server said: \"" + line + "\"");
-					}
-				}
-				System.out.println("Reset");
-			}
-		}
 		sessionEnded = true;
+	}
+
+	private void sendRequestToServer(String request) throws IOException {
+		OutputStream output = socket.getOutputStream();
+			output.write(request.getBytes());
 	}
 
 	private String pushFile() {
@@ -88,6 +81,7 @@ public class Request extends Thread {
 		}
 		String request = "Header: " + header + "\n\tFile name: " + fileName + "\n\tFile type: " + fileType
 				+ "\n\tFile size: " + fileSize + "\n\n\tBody: \n\t\t" + fileContent;
+
 		return request;
 	}
 
