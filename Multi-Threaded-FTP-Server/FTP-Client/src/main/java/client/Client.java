@@ -22,15 +22,6 @@ public class Client {
 		try (Socket sock = new Socket("localhost", 2500)) {
 			System.out.println("Client: connection established");
 			sleep();
-
-			try (PrintStream out = new PrintStream(sock.getOutputStream())) {
-				System.out.println("Sending text: \"Hello\"");
-				out.println("Hello");
-				BufferedReader in = new BufferedReader(new InputStreamReader(sock.getInputStream()));
-				String line = in.readLine();
-				System.out.println("Server said: \"" + line + "\"");
-
-			}
 		}
 		fileRequest();
 	}
