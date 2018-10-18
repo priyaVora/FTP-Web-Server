@@ -59,16 +59,7 @@ public class Server {
 		String line = "";
 		boolean run = true;
 		line = sockReader.readLine();
-		while (line != null) {
-			try {
-				line = sockReader.readLine();
-				requestLine += line;
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-
-		}
+		requestLine += line;
 
 		return requestLine;
 	}
