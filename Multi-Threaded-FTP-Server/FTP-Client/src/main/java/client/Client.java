@@ -14,7 +14,7 @@ import java.util.concurrent.Executors;
 
 public class Client {
 	private static ExecutorService fileService;
-	public static int max_Request = 19;
+	public static int max_Request = 1;
 	public static Random random = new Random();
 
 	public Client(int request) {
@@ -37,7 +37,6 @@ public class Client {
 		int counter = 0;
 
 		while (run)
-
 		{
 			Request r = new Request(socket);
 			fileService.submit(() -> r.run());
@@ -46,7 +45,7 @@ public class Client {
 				System.out.println("# " + r.getId() + " - request is processed.");
 			}
 
-			if (counter == 20) {
+			if (counter == max_Request) {
 				run = false;
 			}
 			counter++;
