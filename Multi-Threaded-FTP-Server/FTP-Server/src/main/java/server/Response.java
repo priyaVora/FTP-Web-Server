@@ -38,7 +38,6 @@ public class Response extends Thread {
 	}
 
 	public String makeResponse() {
-
 		String response = "Invalid Request was sent";
 		String request = "\nHeader: " + header + "\n\tFile name: " + fileName;
 		System.out.println("Server Response: " + request);

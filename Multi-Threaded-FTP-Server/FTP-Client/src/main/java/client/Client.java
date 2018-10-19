@@ -15,8 +15,12 @@ import client.Request;
 
 public class Client {
 	private static ExecutorService fileService;
-	public static final int MAX_REQUEST = 19;
+	public static int max_Request = 1;
 	public static Random random = new Random();
+
+	public Client(int request) {
+		this.max_Request = request;
+	}
 
 	public static void main(String[] args) throws IOException, InterruptedException {
 		System.out.println("Client: make connection with Server");
@@ -24,16 +28,16 @@ public class Client {
 			System.out.println("Client: connection established");
 			sleep();
 			fileRequest(sock);
+			System.out.println("Client Finished Session...");
 		}
 	}
 
 	private static void fileRequest(Socket socket) throws UnknownHostException, IOException {
-		fileService = Executors.newFixedThreadPool(MAX_REQUEST);
+		fileService = Executors.newFixedThreadPool(max_Request);
 		boolean run = true;
 		int counter = 0;
 
 		while (run)
-
 		{
 			Request r = new Request(socket);
 			fileService.submit(() -> r.run());
@@ -42,7 +46,7 @@ public class Client {
 				System.out.println("# " + r.getId() + " - request is processed.");
 			}
 
-			if (counter == 20) {
+			if (counter == max_Request) {
 				run = false;
 			}
 			counter++;

@@ -24,6 +24,8 @@ public class Server {
 	private static Semaphore serverAcceptedFiles = new Semaphore(MAX_FILE_PROCESS);
 
 	public static Random random = new Random();
+	InputStream sockIn;
+	public static BufferedReader sockReader;
 
 	public static void main(String[] args) throws IOException, InterruptedException {
 		process();
@@ -33,23 +35,31 @@ public class Server {
 		ServerSocket servSocket = new ServerSocket(2500);
 		FTP_service = Executors.newFixedThreadPool(MAX_FILE_PROCESS);
 		System.out.println("Starting Up...");
-
+		Socket s = servSocket.accept();
+		System.out.println("Server Accepts Connection");
 		while (true) {
-			try (Socket s = servSocket.accept()) {
-				System.out.println("Server Accepts Connection");
-				System.out.println("Server Receives Request");
+			//System.out.println("Server Receives Request");
+			InputStream sockIn = s.getInputStream();
+			sockReader = new BufferedReader(new InputStreamReader(sockIn));
+			String request = readRequest(sockIn);
+			if (request != null && request != "") {
+				System.out.println("Request Received:\n\t  " + request);
 
-				InputStream sockIn = s.getInputStream();
-				String request = readRequest(sockIn);
-				if (request != null) {
-					System.out.println("Request Received:\n\t  " + request);
-				}
+				Response response = new Response(s);
 
-				//sleep();
+				FTP_service.submit(() -> {
+					try {
+						serverAcceptedFiles.acquire();
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				});
+			}
 //				sockOut.flush();
 //				System.out.println("Closing connection");
-//				servSocket.close();
-			}
+
+			// servSocket.close();
 		}
 	}
 
@@ -57,9 +67,19 @@ public class Server {
 		BufferedReader sockReader = new BufferedReader(new InputStreamReader(sockIn));
 		String requestLine = "";
 		String line = "";
-		int c = 0;
-		line = sockReader.readLine();
-		requestLine += line;
+		String c = "";
+		while ((c = sockReader.readLine()) != null) {
+			if (c.length() != 0) {
+				line = c;
+				requestLine += line;
+			}
+
+		}
+		System.out.println("Read request");
+		String[] request = requestLine.split("||");
+		for(String s : request) {
+			System.out.println(s);
+		}
 		return requestLine;
 	}
 
