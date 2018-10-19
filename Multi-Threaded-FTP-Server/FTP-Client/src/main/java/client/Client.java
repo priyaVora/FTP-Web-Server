@@ -22,7 +22,7 @@ public class Client {
 		this.max_Request = request;
 	}
 
-	public static void main(String[] args) throws IOException, InterruptedException {
+	public void run() throws IOException, InterruptedException {
 		System.out.println("Client: make connection with Server");
 		try (Socket sock = new Socket("localhost", 2500)) {
 			System.out.println("Client: connection established");
