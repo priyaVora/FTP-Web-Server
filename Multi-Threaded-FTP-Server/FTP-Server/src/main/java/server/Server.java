@@ -60,7 +60,6 @@ public class Server {
 		int c = 0;
 		line = sockReader.readLine();
 		requestLine += line;
-
 		return requestLine;
 	}
 
