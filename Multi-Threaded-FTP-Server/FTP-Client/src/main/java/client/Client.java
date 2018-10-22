@@ -60,7 +60,6 @@ public class Client {
 			@Override
 			public void run() {
 				while (true) {
-					sleep(3500);
 					try {
 						checkifResponse(sock);
 					} catch (IOException e) {
@@ -78,8 +77,10 @@ public class Client {
 	public static void checkifResponse(Socket s) throws IOException {
 		InputStream sockIn = s.getInputStream();
 		sockReader = new BufferedReader(new InputStreamReader(sockIn));
-		String request = readResponse(sockIn);
-		System.out.println("Server's Response: ");
+		String readResponse = readResponse(sockIn);
+		if (readResponse != null && readResponse.length() != 0) {
+			System.out.println("Server's Response: " + readResponse);
+		}
 	}
 
 	public static String readResponse(InputStream sockIn) throws IOException {
@@ -88,9 +89,10 @@ public class Client {
 		String c = "";
 //
 		boolean whileLoop = false;
+	
 		while (sockReader.ready()) {
 			c = sockReader.readLine();
-			System.out.println("c: " + c);
+			System.out.println(c);
 			if (c.length() != 0) {
 				line = c;
 				requestLine += "\n";

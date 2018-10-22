@@ -87,8 +87,9 @@ public class Request extends Thread {
 		write(fileNameLine);
 		write(fileTypeLine);
 		write(fileSizeLine);
-	
 		write(fileContentLine);
+		
+		write("------------");
 	
 
 		String request = "\nHeader: " + header + "\n\tFile name: " + fileName + "\n\tFile type: " + fileType
@@ -99,7 +100,7 @@ public class Request extends Thread {
 
 	private String pullFile() {
 		header = "Retrieving a file";
-		String request = "Header: " + header + "\n\t\tFile name: " + fileName + "\n\t\tFile type: " + fileType;
+		String request = "Header: (" + this.getId() + ")" + header + "\n\t\tFile name: " + fileName + "\n\t\tFile type: " + fileType;
 		return request;
 	}
 

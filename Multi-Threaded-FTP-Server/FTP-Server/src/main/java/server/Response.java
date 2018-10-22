@@ -53,6 +53,7 @@ public class Response extends Thread {
 	public void sendResponse() throws IOException {
 		System.out.println("Send Response Entered ...");
 		OutputStream output = this.socket.getOutputStream();
+		output.write("\n".getBytes());
 		output.write("Server wants to talk back".getBytes());
 		//output.write("\n".getBytes());
 	}

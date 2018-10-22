@@ -24,7 +24,8 @@ public class Server {
 	private static Semaphore serverAcceptedFiles = new Semaphore(MAX_FILE_PROCESS);
 
 	public static Random random = new Random();
-	InputStream sockIn;
+	public static Socket s;
+	public InputStream sockIn;
 	public static BufferedReader sockReader;
 
 	public static void main(String[] args) throws IOException, InterruptedException {
@@ -35,63 +36,25 @@ public class Server {
 		ServerSocket servSocket = new ServerSocket(2500);
 		FTP_service = Executors.newFixedThreadPool(MAX_FILE_PROCESS);
 		System.out.println("Starting Up...");
-		Socket s = servSocket.accept();
+		s = servSocket.accept();
 		System.out.println("Server Accepts Connection");
-		while (true) {
-			InputStream sockIn = s.getInputStream();
-			sockReader = new BufferedReader(new InputStreamReader(sockIn));
-			String request = readRequest(sockIn);
-			if (request != null) {
-				System.out.println("Priya - Reads Request" + request);
-			}
 
-			if (request != null && request != "") {
-				System.out.println("\nRequest Received:\n\t  " + request);
+		InputStream sockIn = s.getInputStream();
+		sockReader = new BufferedReader(new InputStreamReader(sockIn));
 
-				Response response = new Response(s, "");
-
-				FTP_service.submit(() -> {
-					try {
-						serverAcceptedFiles.acquire();
-
-						// call responses's run method
-						response.run();
-						System.out.println("Response sent to Client...");
-
-					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-				});
-			}
-//				sockOut.flush();
-//				System.out.println("Closing connection");
-			// servSocket.close();
-		}
-	}
-
-	public static String readRequest(InputStream sockIn) throws IOException {
-		String requestLine = null;
-		String line = "";
-		String c = "";
-
-		if (sockReader.ready()) {
-			requestLine = "";
-			while ((c = sockReader.readLine()) != null) {
-				// while ((c = sockReader.readLine()) != null) {
-
-				if (c.length() != 0) {
-					line = c;
-					requestLine += "\n";
-					requestLine += line;
-
-				}
-				System.out.println(requestLine);
-
-			}
-		}
-
-		return requestLine;
+		ReadRequest readRequest = new ReadRequest(s, sockIn, sockReader, FTP_service);
+		FTP_service.submit(() -> {
+			System.out.println("Entered...");
+//			try {
+//				serverAcceptedFiles.acquire();
+			
+			sleep(4000);
+			readRequest.start();
+//			} catch (InterruptedException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+		});
+		// });
 	}
 
 //	public static String readFile(String filePath) {
@@ -110,9 +73,21 @@ public class Server {
 //		return fileContent;
 //	}
 
-	private static void sleep() {
+	// try {
+//		serverAcceptedFiles.acquire();
+//
+//		// call responses's run method
+//		response.run();
+//		System.out.println("Response sent to Client...");
+//
+//	} catch (InterruptedException e) {
+//		// TODO Auto-generated catch block
+//		e.printStackTrace();
+//	}
+
+	private static void sleep(int time) {
 		try {
-			Thread.sleep(1000);
+			Thread.sleep(time);
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
