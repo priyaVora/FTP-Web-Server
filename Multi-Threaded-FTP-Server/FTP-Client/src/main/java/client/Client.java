@@ -35,7 +35,6 @@ public class Client {
 			@Override
 			public void run() {
 				int counter = 0;
-				// while (true) {
 				try {
 
 					fileRequest(sock);
@@ -51,7 +50,6 @@ public class Client {
 				}
 
 				sleep(3500);
-				// }
 
 			}
 		});
@@ -77,10 +75,7 @@ public class Client {
 	public static void checkifResponse(Socket s) throws IOException {
 		InputStream sockIn = s.getInputStream();
 		sockReader = new BufferedReader(new InputStreamReader(sockIn));
-		String readResponse = readResponse(sockIn);
-		if (readResponse != null && readResponse.length() != 0) {
-			System.out.println("Server's Response: " + readResponse);
-		}
+		readResponse(sockIn);
 	}
 
 	public static String readResponse(InputStream sockIn) throws IOException {
