@@ -64,11 +64,11 @@ public class ReadRequest extends Thread {
 							System.out.println("\nRequest Received:\n\t  " + counter + " " + returnRequest);
 						}
 						requestLine = "";
-//						Response response = new Response(socket, "");
-//						FTP_service.submit(() -> {
-//							System.out.println("SUBMIT");
-//							response.start();
-//						});
+						Response response = new Response(socket, "");
+						FTP_service.submit(() -> {
+							System.out.println("SUBMIT");
+							response.start();
+						});
 
 					}
 				}
