@@ -62,7 +62,7 @@ public class Request extends Thread {
 		long currentTime = System.currentTimeMillis();
 		fileName = "NewFile- " + currentTime;
 		File file = new File(
-				"/home/priya/Personal Workspace/MultiServer/FTP-Web-Server/Multi-Threaded-FTP-Server/FTP-Server/src/main/java/serverFiles"
+				"/home/priya/Personal Workspace/MultiServer/FTP-Web-Server/Multi-Threaded-FTP-Server/FTP-Server/src/main/java/serverFiles/"
 						+ fileName);
 		fileType = ".txt";
 		fileContent = "Current time is : " + System.currentTimeMillis();
@@ -106,7 +106,7 @@ public class Request extends Thread {
 
 	private void setFilePaths() {
 		File folder = new File(
-				"/home/priya/Personal Workspace/MultiServer/FTP-Web-Server/Multi-Threaded-FTP-Server/FTP-Server/src/main/java/serverFiles");
+				"/home/priya/Personal Workspace/MultiServer/FTP-Web-Server/Multi-Threaded-FTP-Server/FTP-Server/src/main/java/serverFiles/");
 		File[] listOfFiles = folder.listFiles();
 		
 		for (int i = 0; i < listOfFiles.length; i++) {

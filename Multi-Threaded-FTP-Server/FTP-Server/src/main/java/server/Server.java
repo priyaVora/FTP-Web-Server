@@ -42,7 +42,7 @@ public class Server {
 		InputStream sockIn = s.getInputStream();
 		sockReader = new BufferedReader(new InputStreamReader(sockIn));
 
-		ReadRequest readRequest = new ReadRequest(s, sockIn, sockReader, FTP_service);
+		ReadRequest readRequest = new ReadRequest(s, sockIn, sockReader, FTP_service, serverAcceptedFiles);
 		FTP_service.submit(() -> {
 			System.out.println("Entered...");
 //			try {

@@ -6,6 +6,7 @@ import java.io.InputStream;
 import java.net.Socket;
 import java.util.Random;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Semaphore;
 
 public class ReadRequest extends Thread {
 	private static Object Locked = new Object();
@@ -15,12 +16,15 @@ public class ReadRequest extends Thread {
 	public InputStream sockIn;
 	public static BufferedReader sockReader;
 	public static ExecutorService FTP_service;
+	public Semaphore serverAcceptedFiles;
 
-	public ReadRequest(Socket s, InputStream sockIn, BufferedReader sockReader, ExecutorService FTP_service) {
+	public ReadRequest(Socket s, InputStream sockIn, BufferedReader sockReader, ExecutorService FTP_service,
+			Semaphore serverAcceptedFiles) {
 		this.socket = s;
 		this.sockIn = sockIn;
 		this.sockReader = sockReader;
 		this.FTP_service = FTP_service;
+		this.serverAcceptedFiles = serverAcceptedFiles;
 	}
 
 	@Override
@@ -66,8 +70,15 @@ public class ReadRequest extends Thread {
 						requestLine = "";
 						Response response = new Response(socket, "");
 						FTP_service.submit(() -> {
+							try {
+								serverAcceptedFiles.acquire();
+							} catch (InterruptedException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
 							System.out.println("SUBMIT");
 							response.start();
+							serverAcceptedFiles.release();
 						});
 
 					}

@@ -54,7 +54,8 @@ public class Response extends Thread {
 		System.out.println("Send Response Entered ...");
 		OutputStream output = this.socket.getOutputStream();
 		output.write("\n".getBytes());
-		output.write("Server wants to talk back".getBytes());
+		output.write("Server's Response\n".getBytes());
+		String response = makeResponse();
 		//output.write("\n".getBytes());
 	}
 }
