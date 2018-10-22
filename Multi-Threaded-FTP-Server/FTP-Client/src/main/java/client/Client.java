@@ -34,13 +34,13 @@ public class Client {
 
 			@Override
 			public void run() {
-				// TODO Auto-generated method stub
+				int counter = 0;
+				// while (true) {
 				try {
-					int counter = 0;
-					while (counter != 20) {
-						fileRequest(sock);
-						counter++;
-					}
+
+					fileRequest(sock);
+					System.out.println("Client Finished Sending Request Session...");
+					counter++;
 
 				} catch (UnknownHostException e) {
 					// TODO Auto-generated catch block
@@ -49,20 +49,25 @@ public class Client {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-				System.out.println("Client Finished Sending Request Session...");
+
+				sleep(3500);
+				// }
+
 			}
 		});
 
 		Thread responseChecking = new Thread(new Runnable() {
 			@Override
 			public void run() {
-				try {
-					checkifResponse(sock);
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+				while (true) {
+					sleep(3500);
+					try {
+						checkifResponse(sock);
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 				}
-				System.out.println("Client Finished Checking for Response Session...");
 			}
 		});
 
@@ -71,29 +76,36 @@ public class Client {
 	}
 
 	public static void checkifResponse(Socket s) throws IOException {
-		System.out.println("Start Checking...For Server Response");
-//		InputStream sockIn = s.getInputStream();
-//		sockReader = new BufferedReader(new InputStreamReader(sockIn));
-//		String request = readResponse(sockIn);
-//		System.out.println("End Checking...For Server Response");
+		InputStream sockIn = s.getInputStream();
+		sockReader = new BufferedReader(new InputStreamReader(sockIn));
+		String request = readResponse(sockIn);
+		System.out.println("Server's Response: ");
 	}
 
 	public static String readResponse(InputStream sockIn) throws IOException {
-		BufferedReader sockReader = new BufferedReader(new InputStreamReader(sockIn));
 		String requestLine = "";
 		String line = "";
 		String c = "";
-
-		while ((c = sockReader.readLine()) != null) {
+//
+		boolean whileLoop = false;
+		while (sockReader.ready()) {
+			c = sockReader.readLine();
+			System.out.println("c: " + c);
 			if (c.length() != 0) {
 				line = c;
 				requestLine += "\n";
 				requestLine += line;
-				// System.out.println(line);
+				System.out.println("---------" + line);
+				whileLoop = true;
 			}
 
-		}
+			System.out.println("While LOOP: " + whileLoop);
 
+		}
+		// requestLine = "Server had sent a response, but can't read it...";
+//		if (requestLine != null && requestLine != "") {
+//			System.out.println("-----" + requestLine);
+//		}
 		return requestLine;
 	}
 
@@ -112,7 +124,7 @@ public class Client {
 				System.out.println("# " + r.getId() + " - request is processed.");
 			}
 
-			if (counter == 20) {
+			if (counter == max_Request) {
 				run = false;
 			}
 			counter++;

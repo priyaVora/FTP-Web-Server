@@ -41,6 +41,9 @@ public class Server {
 			InputStream sockIn = s.getInputStream();
 			sockReader = new BufferedReader(new InputStreamReader(sockIn));
 			String request = readRequest(sockIn);
+			if (request != null) {
+				System.out.println("Priya - Reads Request" + request);
+			}
 
 			if (request != null && request != "") {
 				System.out.println("\nRequest Received:\n\t  " + request);
@@ -50,11 +53,11 @@ public class Server {
 				FTP_service.submit(() -> {
 					try {
 						serverAcceptedFiles.acquire();
-						
-						//call responses's run method
+
+						// call responses's run method
 						response.run();
 						System.out.println("Response sent to Client...");
-						
+
 					} catch (InterruptedException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
@@ -68,19 +71,24 @@ public class Server {
 	}
 
 	public static String readRequest(InputStream sockIn) throws IOException {
-		BufferedReader sockReader = new BufferedReader(new InputStreamReader(sockIn));
-		String requestLine = "";
+		String requestLine = null;
 		String line = "";
 		String c = "";
 
-		while ((c = sockReader.readLine()) != null) {
-			if (c.length() != 0) {
-				line = c;
-				requestLine += "\n";
-				requestLine += line;
-				//System.out.println(line);
-			}
+		if (sockReader.ready()) {
+			requestLine = "";
+			while ((c = sockReader.readLine()) != null) {
+				// while ((c = sockReader.readLine()) != null) {
 
+				if (c.length() != 0) {
+					line = c;
+					requestLine += "\n";
+					requestLine += line;
+
+				}
+				System.out.println(requestLine);
+
+			}
 		}
 
 		return requestLine;

@@ -69,7 +69,7 @@ public class Request extends Thread {
 		fileSize = fileContent.length();
 		try {
 			if (file.createNewFile()) {
-				System.out.println("File is created!");
+				//System.out.println("File is created!");
 			} else {
 				System.out.println("File already exists.");
 			}
