@@ -45,11 +45,16 @@ public class Server {
 			if (request != null && request != "") {
 				System.out.println("\nRequest Received:\n\t  " + request);
 
-				Response response = new Response(s);
+				Response response = new Response(s, "");
 
 				FTP_service.submit(() -> {
 					try {
 						serverAcceptedFiles.acquire();
+						
+						//call responses's run method
+						response.run();
+						System.out.println("Response sent to Client...");
+						
 					} catch (InterruptedException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
@@ -58,7 +63,6 @@ public class Server {
 			}
 //				sockOut.flush();
 //				System.out.println("Closing connection");
-
 			// servSocket.close();
 		}
 	}

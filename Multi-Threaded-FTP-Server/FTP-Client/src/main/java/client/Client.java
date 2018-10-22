@@ -16,6 +16,7 @@ public class Client {
 	private static ExecutorService fileService;
 	public static int max_Request = 19;
 	public static Random random = new Random();
+	public static BufferedReader sockReader;
 
 	public Client(int request) {
 		this.max_Request = request;
@@ -23,12 +24,77 @@ public class Client {
 
 	public static void main(String[] args) throws IOException, InterruptedException {
 		System.out.println("Client: make connection with Server");
-		try (Socket sock = new Socket("localhost", 2500)) {
-			System.out.println("Client: connection established");
-			sleep();
-			fileRequest(sock);
-			System.out.println("Client Finished Session...");
+		Socket sock = new Socket("localhost", 2500);
+
+		// while(sock.isConnected() != false) {
+		System.out.println("Client: connection established");
+		sleep(1000);
+
+		Thread sendingRequest = new Thread(new Runnable() {
+
+			@Override
+			public void run() {
+				// TODO Auto-generated method stub
+				try {
+					int counter = 0;
+					while (counter != 20) {
+						fileRequest(sock);
+						counter++;
+					}
+
+				} catch (UnknownHostException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				System.out.println("Client Finished Sending Request Session...");
+			}
+		});
+
+		Thread responseChecking = new Thread(new Runnable() {
+			@Override
+			public void run() {
+				try {
+					checkifResponse(sock);
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				System.out.println("Client Finished Checking for Response Session...");
+			}
+		});
+
+		sendingRequest.start();
+		responseChecking.start();
+	}
+
+	public static void checkifResponse(Socket s) throws IOException {
+		System.out.println("Start Checking...For Server Response");
+//		InputStream sockIn = s.getInputStream();
+//		sockReader = new BufferedReader(new InputStreamReader(sockIn));
+//		String request = readResponse(sockIn);
+//		System.out.println("End Checking...For Server Response");
+	}
+
+	public static String readResponse(InputStream sockIn) throws IOException {
+		BufferedReader sockReader = new BufferedReader(new InputStreamReader(sockIn));
+		String requestLine = "";
+		String line = "";
+		String c = "";
+
+		while ((c = sockReader.readLine()) != null) {
+			if (c.length() != 0) {
+				line = c;
+				requestLine += "\n";
+				requestLine += line;
+				// System.out.println(line);
+			}
+
 		}
+
+		return requestLine;
 	}
 
 	private static void fileRequest(Socket socket) throws UnknownHostException, IOException {
@@ -55,9 +121,9 @@ public class Client {
 
 	}
 
-	private static void sleep() {
+	private static void sleep(int time) {
 		try {
-			Thread.sleep(1000);
+			Thread.sleep(time);
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

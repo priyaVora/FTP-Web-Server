@@ -1,6 +1,7 @@
 package server;
 
 import java.io.IOException;
+import java.io.OutputStream;
 import java.io.PrintStream;
 import java.net.Socket;
 import java.util.Random;
@@ -13,28 +14,32 @@ public class Response extends Thread {
 	private String fileName = "";
 	private boolean session = false;
 	private Socket socket;
+	
+	public String response = null;
 
-	public Response(Socket s) {
+	public Response(Socket s, String responseToClient) {
 		this.socket = s;
+		this.response = responseToClient;
 	}
 
 	@Override
 	public void run() {
 		synchronized (Locked) {
-			responseSession();
+			System.out.println("Response Run Starts...");
+			try {
+				responseSession();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 		Locked = true;
 	}
 
-	private void responseSession() {
+	private void responseSession() throws IOException {
 		session = false;
-		respond();
-		session = true;
-	}
-
-	public void respond() {
-		String response = "";
 		sendResponse();
+		session = true;
 	}
 
 	public String makeResponse() {
@@ -45,14 +50,10 @@ public class Response extends Thread {
 		return request;
 	}
 
-	public void sendResponse() {
-		PrintStream sockOut = null;
-		try {
-			sockOut = new PrintStream(socket.getOutputStream());
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		sockOut.println(makeResponse());
+	public void sendResponse() throws IOException {
+		System.out.println("Send Response Entered ...");
+		OutputStream output = this.socket.getOutputStream();
+		output.write("Server wants to talk back".getBytes());
+		//output.write("\n".getBytes());
 	}
 }
