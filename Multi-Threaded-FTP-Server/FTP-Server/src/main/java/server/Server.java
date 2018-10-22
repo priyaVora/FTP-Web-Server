@@ -44,52 +44,15 @@ public class Server {
 
 		ReadRequest readRequest = new ReadRequest(s, sockIn, sockReader, FTP_service, serverAcceptedFiles);
 		FTP_service.submit(() -> {
-			System.out.println("Entered...");
-//			try {
-//				serverAcceptedFiles.acquire();
-			
 			sleep(4000);
 			readRequest.start();
-//			} catch (InterruptedException e) {
-//				// TODO Auto-generated catch block
-//				e.printStackTrace();
 		});
-		// });
 	}
-
-//	public static String readFile(String filePath) {
-//		String fileContent = "";
-//		try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
-//			String sCurrentLine;
-//			while ((sCurrentLine = br.readLine()) != null) {
-//				fileContent += sCurrentLine;
-//				fileContent += "\n";
-//				System.out.println("sCurrentLine: " + sCurrentLine);
-//			}
-//		} catch (IOException e) {
-//			e.printStackTrace();
-//		}
-//
-//		return fileContent;
-//	}
-
-	// try {
-//		serverAcceptedFiles.acquire();
-//
-//		// call responses's run method
-//		response.run();
-//		System.out.println("Response sent to Client...");
-//
-//	} catch (InterruptedException e) {
-//		// TODO Auto-generated catch block
-//		e.printStackTrace();
-//	}
 
 	private static void sleep(int time) {
 		try {
 			Thread.sleep(time);
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}

@@ -44,10 +44,9 @@ public class Response extends Thread {
 
 	public String makeResponse() {
 		String response = "Invalid Request was sent";
-		String request = "\nHeader: " + header + "\n\tFile name: " + fileName;
-		System.out.println("Server Response: " + request);
+		response = "\nHeader: " + header + "\n\tFile name: " + fileName;
 
-		return request;
+		return response;
 	}
 
 	public void sendResponse() throws IOException {
@@ -56,6 +55,5 @@ public class Response extends Thread {
 		output.write("\n".getBytes());
 		output.write("Server's Response\n".getBytes());
 		String response = makeResponse();
-		//output.write("\n".getBytes());
 	}
 }

@@ -87,8 +87,6 @@ public class Client {
 		String requestLine = "";
 		String line = "";
 		String c = "";
-//
-		boolean whileLoop = false;
 	
 		while (sockReader.ready()) {
 			c = sockReader.readLine();
@@ -97,17 +95,8 @@ public class Client {
 				line = c;
 				requestLine += "\n";
 				requestLine += line;
-				System.out.println("---------" + line);
-				whileLoop = true;
 			}
-
-			System.out.println("While LOOP: " + whileLoop);
-
 		}
-		// requestLine = "Server had sent a response, but can't read it...";
-//		if (requestLine != null && requestLine != "") {
-//			System.out.println("-----" + requestLine);
-//		}
 		return requestLine;
 	}
 

@@ -34,7 +34,6 @@ public class ReadRequest extends Thread {
 		try {
 			process();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -49,8 +48,6 @@ public class ReadRequest extends Thread {
 			requestLine = "";
 			int counter = 0;
 			while ((c = sockReader.readLine()) != null) {
-				// while ((c = sockReader.readLine()) != null) {
-
 				if (c.length() != 0) {
 					if (!c.equals("------------")) {
 						line = c;
@@ -73,10 +70,8 @@ public class ReadRequest extends Thread {
 							try {
 								serverAcceptedFiles.acquire();
 							} catch (InterruptedException e) {
-								// TODO Auto-generated catch block
 								e.printStackTrace();
 							}
-							System.out.println("SUBMIT");
 							response.start();
 							serverAcceptedFiles.release();
 						});
@@ -85,8 +80,6 @@ public class ReadRequest extends Thread {
 				}
 
 			}
-			System.out.println("Server ended While Loop");
-
 		}
 	}
 }
