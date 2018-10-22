@@ -39,9 +39,11 @@ public class Server {
 		System.out.println("Server Accepts Connection");
 		while (true) {
 			//System.out.println("Server Receives Request");
+
 			InputStream sockIn = s.getInputStream();
 			sockReader = new BufferedReader(new InputStreamReader(sockIn));
 			String request = readRequest(sockIn);
+
 			if (request != null && request != "") {
 				System.out.println("Request Received:\n\t  " + request);
 
@@ -68,6 +70,7 @@ public class Server {
 		String requestLine = "";
 		String line = "";
 		String c = "";
+
 		while ((c = sockReader.readLine()) != null) {
 			if (c.length() != 0) {
 				line = c;
@@ -75,11 +78,7 @@ public class Server {
 			}
 
 		}
-		System.out.println("Read request");
-		String[] request = requestLine.split("||");
-		for(String s : request) {
-			System.out.println(s);
-		}
+
 		return requestLine;
 	}
 

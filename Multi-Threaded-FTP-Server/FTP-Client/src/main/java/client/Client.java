@@ -11,18 +11,17 @@ import java.net.UnknownHostException;
 import java.util.Random;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import client.Request;
 
 public class Client {
 	private static ExecutorService fileService;
-	public static int max_Request = 1;
+	public static int max_Request = 19;
 	public static Random random = new Random();
 
 	public Client(int request) {
 		this.max_Request = request;
 	}
 
-	public void run() throws IOException, InterruptedException {
+	public static void main(String[] args) throws IOException, InterruptedException {
 		System.out.println("Client: make connection with Server");
 		try (Socket sock = new Socket("localhost", 2500)) {
 			System.out.println("Client: connection established");
@@ -38,6 +37,7 @@ public class Client {
 		int counter = 0;
 
 		while (run)
+
 		{
 			Request r = new Request(socket);
 			fileService.submit(() -> r.run());
@@ -46,7 +46,7 @@ public class Client {
 				System.out.println("# " + r.getId() + " - request is processed.");
 			}
 
-			if (counter == max_Request) {
+			if (counter == 20) {
 				run = false;
 			}
 			counter++;

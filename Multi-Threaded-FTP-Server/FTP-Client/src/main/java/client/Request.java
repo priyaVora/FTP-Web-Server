@@ -7,7 +7,6 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.net.Socket;
-import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -49,28 +48,25 @@ public class Request extends Thread {
 	private void requestSession() throws IOException {
 		sessionEnded = false;
 		String request = makeRequest();
-		sendRequestToServer(request);
-
 		sessionEnded = true;
 	}
 
-	private void sendRequestToServer(String request) throws IOException {
-		System.out.println("Sending file to Server");
+	public void write(String request) throws IOException {
 		OutputStream output = socket.getOutputStream();
-			output.write(request.getBytes());
+		output.write(request.getBytes());
+		output.write("".getBytes());
 	}
 
-	private String pushFile() {
+	private String pushFile() throws IOException {
 		header = "Sending a file.";
 		long currentTime = System.currentTimeMillis();
-//		fileName = "NewFile- " + currentTime;
-		fileName = "Elephants";
+		fileName = "NewFile- " + currentTime;
 		File file = new File(
-				"C:\\Users\\Parker\\Workspaces\\ProcessModeling\\FTP-Web-Server\\Multi-Threaded-FTP-Server\\FTP-Server\\src\\main\\java\\serverFiles\\Elephants");
+				"/home/priya/Personal Workspace/MultiServer/FTP-Web-Server/Multi-Threaded-FTP-Server/FTP-Server/src/main/java/serverFiles"
+						+ fileName);
 		fileType = ".txt";
-		fileContent = fileToByteArray(file);
+		fileContent = "Current time is : " + System.currentTimeMillis();
 		fileSize = fileContent.length();
-
 		try {
 			if (file.createNewFile()) {
 				System.out.println("File is created!");
@@ -78,29 +74,25 @@ public class Request extends Thread {
 				System.out.println("File already exists.");
 			}
 		} catch (IOException e) {
-
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		String request = "Header:" + header + "||File name:" + fileName + "||File type:" + fileType
-				+ "||File size:" + fileSize + "||Body:" + fileContent;
+
+		String headerLine = "\nHeader: \" " + header;
+		String fileNameLine = "\tFile name: " + fileName;
+		String fileTypeLine = "\tFile type: \"" + fileType;
+		String fileSizeLine = "\tFile size: " + fileSize;
+		String fileContentLine = "\t\tBody: \n\t\t" + fileContent;
+		write(headerLine);
+		write(fileNameLine);
+		write(fileTypeLine);
+		write(fileSizeLine);
+		write(fileContentLine);
+
+		String request = "\nHeader: " + header + "\n\tFile name: " + fileName + "\n\tFile type: " + fileType
+				+ "\n\tFile size: " + fileSize + "\n\n\tBody: \n\t\t" + fileContent;
+
 		return request;
-	}
-
-	private String fileToByteArray(File file) {	
-		List<String> readFileContent = null;
-		try {
-			readFileContent = Files.readAllLines(file.toPath());
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		System.out.println("File byte size: " + file.length());
-		String content = "";
-		for(String s : readFileContent) {
-			content += s;
-			content += "\r\n";
-		}
-		System.out.println("File content: " + content);
-		return content;
 	}
 
 	private String pullFile() {
@@ -111,9 +103,9 @@ public class Request extends Thread {
 
 	private void setFilePaths() {
 		File folder = new File(
-				"C:\\Users\\Parker\\Workspaces\\ProcessModeling\\FTP-Web-Server\\Multi-Threaded-FTP-Server\\FTP-Server\\src\\main\\java\\serverFiles\\");
+				"/home/priya/Personal Workspace/MultiServer/FTP-Web-Server/Multi-Threaded-FTP-Server/FTP-Server/src/main/java/serverFiles");
 		File[] listOfFiles = folder.listFiles();
-
+		
 		for (int i = 0; i < listOfFiles.length; i++) {
 			if (listOfFiles[i].isFile()) {
 				listOfFilePaths.add(i, listOfFiles[i].getPath());
@@ -126,7 +118,6 @@ public class Request extends Thread {
 		int randomRequest = gen.nextInt(2);
 		String request = "Invalid Request";
 		int randomFile = gen.nextInt(listOfFileNames.size());
-		randomRequest = 0;
 
 		if (randomRequest == 0) {
 			// Request is push file
