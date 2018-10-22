@@ -38,14 +38,12 @@ public class Server {
 		Socket s = servSocket.accept();
 		System.out.println("Server Accepts Connection");
 		while (true) {
-			//System.out.println("Server Receives Request");
-
 			InputStream sockIn = s.getInputStream();
 			sockReader = new BufferedReader(new InputStreamReader(sockIn));
 			String request = readRequest(sockIn);
 
 			if (request != null && request != "") {
-				System.out.println("Request Received:\n\t  " + request);
+				System.out.println("\nRequest Received:\n\t  " + request);
 
 				Response response = new Response(s);
 
@@ -74,7 +72,9 @@ public class Server {
 		while ((c = sockReader.readLine()) != null) {
 			if (c.length() != 0) {
 				line = c;
+				requestLine += "\n";
 				requestLine += line;
+				//System.out.println(line);
 			}
 
 		}
@@ -82,20 +82,21 @@ public class Server {
 		return requestLine;
 	}
 
-	public static String readFile(String filePath) {
-		String fileContent = "";
-		try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
-			String sCurrentLine;
-			while ((sCurrentLine = br.readLine()) != null) {
-				fileContent += sCurrentLine;
-				fileContent += "\n";
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
-		return fileContent;
-	}
+//	public static String readFile(String filePath) {
+//		String fileContent = "";
+//		try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
+//			String sCurrentLine;
+//			while ((sCurrentLine = br.readLine()) != null) {
+//				fileContent += sCurrentLine;
+//				fileContent += "\n";
+//				System.out.println("sCurrentLine: " + sCurrentLine);
+//			}
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//		}
+//
+//		return fileContent;
+//	}
 
 	private static void sleep() {
 		try {

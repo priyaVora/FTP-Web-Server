@@ -54,7 +54,7 @@ public class Request extends Thread {
 	public void write(String request) throws IOException {
 		OutputStream output = socket.getOutputStream();
 		output.write(request.getBytes());
-		output.write("".getBytes());
+		output.write("\n".getBytes());
 	}
 
 	private String pushFile() throws IOException {
@@ -87,7 +87,9 @@ public class Request extends Thread {
 		write(fileNameLine);
 		write(fileTypeLine);
 		write(fileSizeLine);
+	
 		write(fileContentLine);
+	
 
 		String request = "\nHeader: " + header + "\n\tFile name: " + fileName + "\n\tFile type: " + fileType
 				+ "\n\tFile size: " + fileSize + "\n\n\tBody: \n\t\t" + fileContent;
