@@ -65,6 +65,20 @@ public class ReadRequest extends Thread {
 
 							System.out.println("\nRequest Received:  " + id + " \n\t" + returnRequest);
 							requestLine = "";
+							
+							String[] requestSeparated = returnRequest.split("\n");
+							if(returnRequest.contains("Header:") && returnRequest.contains("Body:")) {
+								System.out.println("PUSH HEADER: " + requestSeparated[1]);
+								//NAME = [2]
+								//TYPE = [3]
+								//SIZE = [4]
+								System.out.println("PUSH BODY: " + requestSeparated[5]);
+							}
+							else {
+								System.out.println("PULL HEADER: " + requestSeparated[1]);
+								//NAME = [2]
+								//TYPE = [3]
+							}
 
 							if (returnRequest.contains("Sending a file")) {
 								response = new Response(socket, id, "Upload File");
