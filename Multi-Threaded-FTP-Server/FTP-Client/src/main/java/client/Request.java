@@ -17,7 +17,8 @@ public class Request extends Thread {
 	private String fileType = "";
 	private String fileContent = "";
 	private long fileSize = 0;
-
+	private String filePath = "C:\\Users\\Parker\\Workspaces\\ProcessModeling\\FTP-Web-Server\\Multi-Threaded-FTP-Server\\FTP-Server\\src\\main\\java\\serverFiles\\";
+	// "/home/priya/Personal Workspace/MultiServer/FTP-Web-Server/Multi-Threaded-FTP-Server/FTP-Server/src/main/java/serverFiles/"
 	private static Object Locked = new Object();
 	private static Random gen = new Random();
 	boolean sessionEnded = false;
@@ -63,9 +64,7 @@ public class Request extends Thread {
 		header = "Sending a file";
 		long currentTime = System.currentTimeMillis();
 		fileName = "NewFile- " + currentTime;
-		File file = new File(
-				"/home/priya/Personal Workspace/MultiServer/FTP-Web-Server/Multi-Threaded-FTP-Server/FTP-Server/src/main/java/serverFiles/"
-						+ fileName);
+		File file = new File(filePath + fileName);
 		fileType = ".txt";
 		fileContent = "Current time is : " + System.currentTimeMillis();
 		fileSize = fileContent.length();
@@ -81,45 +80,44 @@ public class Request extends Thread {
 		}
 
 		String headerLine = "\nHeader: (" + this.getId() + ") " + header;
-		String fileNameLine = "\tFile name: " + fileName;
-		String fileTypeLine = "\tFile type: " + fileType;
-		String fileSizeLine = "\tFile size: " + fileSize;
-		String fileContentLine = "\t\tBody: \n\t\t" + fileContent;
+		String fileNameLine = "\n\tFile name: " + fileName;
+		String fileTypeLine = "\n\tFile type: " + fileType;
+		String fileSizeLine = "\n\tFile size: " + fileSize;
+		String fileContentLine = "\n\t\tBody: " + fileContent;
 		write(id);
 		write(headerLine);
 		write(fileNameLine);
 		write(fileTypeLine);
 		write(fileSizeLine);
 		write(fileContentLine);
-
 		write("------------");
-
-		String request = "\nHeader: (" + this.getId() + ") " + header + "\n\tFile name: " + fileName + "\n\tFile type: "
-				+ fileType + "\n\tFile size: " + fileSize + "\n\n\tBody: \n\t\t" + fileContent;
+		
+		String request = id + headerLine + fileNameLine + fileTypeLine + fileSizeLine + fileContentLine;
+//		String request = "\nHeader: (" + this.getId() + ") " + header + "\n\tFile name: " + fileName + "\n\tFile type: "
+//				+ fileType + "\n\tFile size: " + fileSize + "\n\n\tBody: \n\t\t" + fileContent;
 
 		return request;
 	}
 
 	private String pullFile() throws IOException {
 		header = "Retrieving a file";
-
 		String headerLine = "\nHeader: (" + this.getId() + ") " + header;
-		String fileNameLine = "\tFile name: " + fileName;
-		String fileTypeLine = "\tFile type:" + fileType;
+		String fileNameLine = "\n\tFile name: " + fileName;
+		String fileTypeLine = "\n\tFile type:" + fileType;
 		write(id);
 		write(headerLine);
 		write(fileNameLine);
 		write(fileTypeLine);
 		write("------------");
 
-		String request = "\nHeader: (" + this.getId() + ") " + header + "\n\t\tFile name: " + fileName
-				+ "\n\t\tFile type: " + fileType;
+		String request = id + headerLine + fileNameLine + fileTypeLine;
+//		String request = "\nHeader: (" + this.getId() + ") " + header + "\n\t\tFile name: " + fileName
+//				+ "\n\t\tFile type: " + fileType;
 		return request;
 	}
 
 	private void setFilePaths() {
-		File folder = new File(
-				"/home/priya/Personal Workspace/MultiServer/FTP-Web-Server/Multi-Threaded-FTP-Server/FTP-Server/src/main/java/serverFiles/");
+		File folder = new File(filePath);
 		File[] listOfFiles = folder.listFiles();
 
 		for (int i = 0; i < listOfFiles.length; i++) {

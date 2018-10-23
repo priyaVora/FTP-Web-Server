@@ -106,9 +106,9 @@ public class Client {
 			Request r = new Request(socket);
 			fileService.submit(() -> r.run());
 			System.out.println();
-			if (r.sessionEnded == true) {
-				System.out.println("# " + r.getId() + " - request is processed.");
-			}
+//			if (r.sessionEnded == true) {
+//				System.out.println("# " + r.getId() + " - request is processed.");
+//			}
 
 			if (counter == max_Request) {
 				run = false;
