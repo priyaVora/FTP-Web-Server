@@ -18,6 +18,7 @@ public class ReadRequest extends Thread {
 	public static ExecutorService FTP_service;
 	public Semaphore serverAcceptedFiles;
 	int id = 0;
+	private Response response = null;
 
 	public ReadRequest(Socket s, InputStream sockIn, BufferedReader sockReader, ExecutorService FTP_service,
 			Semaphore serverAcceptedFiles) {
@@ -61,14 +62,15 @@ public class ReadRequest extends Thread {
 						} else {
 							counter++;
 							returnRequest = requestLine;
-//							if (returnRequest.contains("Header: Sending a file")) {
-							//
-//							} else if()  {
-							//
-//							}
+
 							System.out.println("\nRequest Received:  " + id + " \n\t" + returnRequest);
 							requestLine = "";
-							Response response = new Response(socket);
+
+							if (returnRequest.contains("Sending a file")) {
+								response = new Response(socket, id, "Upload File");
+							} else if (returnRequest.contains("Retrieving a file")) {
+								response = new Response(socket, id, "Retrieved File");
+							}
 							FTP_service.submit(() -> {
 								try {
 									serverAcceptedFiles.acquire();

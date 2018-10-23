@@ -12,11 +12,16 @@ public class Response extends Thread {
 
 	private String header = "";
 	private String fileName = "";
+	private String fileType = "";
+	private String responseType = "";
 	private boolean session = false;
 	private Socket socket;
+	int id = 0;
 
-	public Response(Socket s) {
+	public Response(Socket s, int id, String response) {
 		this.socket = s;
+		this.id = id;
+		this.responseType = response;
 	}
 
 	@Override
@@ -39,7 +44,8 @@ public class Response extends Thread {
 
 	public String makeResponse() {
 		String response = "Invalid Request was sent";
-		response = "\nHeader: " + header + "\n\tFile name: " + fileName;
+		response = "Server Response Header: (" + id + ")- " + responseType + " " + header + "\n\tFile name: " + fileName
+				+ "\n\tType: " + fileType;
 
 		return response;
 	}
@@ -47,7 +53,8 @@ public class Response extends Thread {
 	public void sendResponse() throws IOException {
 		OutputStream output = this.socket.getOutputStream();
 		output.write("\n".getBytes());
-		output.write("Server's Response\n".getBytes());
 		String response = makeResponse();
+		output.write(response.getBytes());
+		// response = makeResponse();
 	}
 }
