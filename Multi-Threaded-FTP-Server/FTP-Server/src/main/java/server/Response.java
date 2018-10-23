@@ -14,13 +14,23 @@ public class Response extends Thread {
 	private String fileName = "";
 	private String fileType = "";
 	private String responseType = "";
+	private String fileBody = "";
 	private boolean session = false;
 	private Socket socket;
 	int id = 0;
 
+	//PULL RESPONSE
 	public Response(Socket s, int id, String response) {
 		this.socket = s;
 		this.id = id;
+		this.responseType = response;
+	}
+	
+	//PUSH RESPONSE
+	public Response(Socket s, int id, String body, String response) {
+		this.socket = s;
+		this.id = id;
+		this.fileBody = body;
 		this.responseType = response;
 	}
 

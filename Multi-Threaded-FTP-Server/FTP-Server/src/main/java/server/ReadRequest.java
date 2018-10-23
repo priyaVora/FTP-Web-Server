@@ -66,30 +66,41 @@ public class ReadRequest extends Thread {
 							System.out.println("\nRequest Received:  " + id + " \n\t" + returnRequest);
 							requestLine = "";
 							
-							String[] requestSeparated = returnRequest.split("\n");
-							if(returnRequest.contains("Header:") && returnRequest.contains("Body:")) {
-								System.out.println("PUSH HEADER: " + requestSeparated[1]);
-								//NAME = [2]
-								//TYPE = [3]
-								//SIZE = [4]
-								System.out.println("PUSH BODY: " + requestSeparated[5]);
-							}
-							else {
-								System.out.println("PULL HEADER: " + requestSeparated[1]);
-								//NAME = [2]
-								//TYPE = [3]
-							}
+//							
+//							if(returnRequest.contains("Header:") && returnRequest.contains("Body:")) {
+//								//HEADER = [1]
+//								//NAME = [2]
+//								//TYPE = [3]
+//								//SIZE = [4]
+//								//BODY = [5]
+//							}
+//							else {
+//								//HEADER = [1]
+//								//NAME = [2]
+//								//TYPE = [3]
+//							}
 
+							String[] requestSeparated = returnRequest.split("\n");
+							String cleanHeader = requestSeparated[1].substring(8);
+							String cleanName = requestSeparated[2].substring(12);
+							String cleanType = requestSeparated[3].substring(12);
+							
 							if (returnRequest.contains("Sending a file")) {
-								response = new Response(socket, id, "Upload File");
+								String cleanSize = requestSeparated[4].substring(12);
+								String cleanBody = requestSeparated[5].substring(8);
+								response = new Response(socket, id, cleanBody, "Upload File");
 							} else if (returnRequest.contains("Retrieving a file")) {
 								response = new Response(socket, id, "Retrieved File");
 							}
-							if (c.contains("File name:")) {
-								response.setFileName(c);
-							} else if (c.contains("File type:")) {
-								response.setFileType(c);
-							}
+							response.setFileName(cleanName);
+							response.setFileType(cleanType);
+							
+//							if (c.contains("File name:")) {
+//								response.setFileName(c);
+//							} else if (c.contains("File type:")) {
+//								response.setFileType(c);
+//							}
+							
 							FTP_service.submit(() -> {
 								try {
 									serverAcceptedFiles.acquire();
