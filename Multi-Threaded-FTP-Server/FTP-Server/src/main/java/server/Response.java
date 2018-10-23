@@ -14,22 +14,17 @@ public class Response extends Thread {
 	private String fileName = "";
 	private boolean session = false;
 	private Socket socket;
-	
-	public String response = null;
 
-	public Response(Socket s, String responseToClient) {
+	public Response(Socket s) {
 		this.socket = s;
-		this.response = responseToClient;
 	}
 
 	@Override
 	public void run() {
 		synchronized (Locked) {
-			System.out.println("Response Run Starts...");
 			try {
 				responseSession();
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
@@ -50,7 +45,6 @@ public class Response extends Thread {
 	}
 
 	public void sendResponse() throws IOException {
-		System.out.println("Send Response Entered ...");
 		OutputStream output = this.socket.getOutputStream();
 		output.write("\n".getBytes());
 		output.write("Server's Response\n".getBytes());

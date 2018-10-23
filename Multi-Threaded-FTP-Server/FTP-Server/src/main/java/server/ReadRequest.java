@@ -17,6 +17,7 @@ public class ReadRequest extends Thread {
 	public static BufferedReader sockReader;
 	public static ExecutorService FTP_service;
 	public Semaphore serverAcceptedFiles;
+	int id = 0;
 
 	public ReadRequest(Socket s, InputStream sockIn, BufferedReader sockReader, ExecutorService FTP_service,
 			Semaphore serverAcceptedFiles) {
@@ -49,34 +50,38 @@ public class ReadRequest extends Thread {
 			int counter = 0;
 			while ((c = sockReader.readLine()) != null) {
 				if (c.length() != 0) {
-					if (!c.equals("------------")) {
-						line = c;
-						requestLine += "\n";
-						requestLine += line;
-					} else {
-						counter++;
-						returnRequest = requestLine;
+					try {
+						id = Integer.parseInt(c);
 
-						if (returnRequest != null) {
-							System.out.println(returnRequest);
+					} catch (NumberFormatException e) {
+						if (!c.equals("------------")) {
+							line = c;
+							requestLine += "\n";
+							requestLine += line;
+						} else {
+							counter++;
+							returnRequest = requestLine;
+//							if (returnRequest.contains("Header: Sending a file")) {
+							//
+//							} else if()  {
+							//
+//							}
+							System.out.println("\nRequest Received:  " + id + " \n\t" + returnRequest);
+							requestLine = "";
+							Response response = new Response(socket);
+							FTP_service.submit(() -> {
+								try {
+									serverAcceptedFiles.acquire();
+								} catch (InterruptedException ex) {
+									ex.printStackTrace();
+								}
+								response.start();
+								serverAcceptedFiles.release();
+							});
+
 						}
-
-						if (returnRequest != null && returnRequest != "") {
-							System.out.println("\nRequest Received:\n\t  " + counter + " " + returnRequest);
-						}
-						requestLine = "";
-						Response response = new Response(socket, "");
-						FTP_service.submit(() -> {
-							try {
-								serverAcceptedFiles.acquire();
-							} catch (InterruptedException e) {
-								e.printStackTrace();
-							}
-							response.start();
-							serverAcceptedFiles.release();
-						});
-
 					}
+
 				}
 
 			}

@@ -14,7 +14,7 @@ import java.util.concurrent.Executors;
 
 public class Client {
 	private static ExecutorService fileService;
-	public static int max_Request = 19;
+	public static int max_Request = 20;
 	public static Random random = new Random();
 	public static BufferedReader sockReader;
 
