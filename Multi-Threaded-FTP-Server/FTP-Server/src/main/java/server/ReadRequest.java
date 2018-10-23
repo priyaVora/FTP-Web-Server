@@ -88,10 +88,11 @@ public class ReadRequest extends Thread {
 							if (returnRequest.contains("Sending a file")) {
 								String cleanSize = requestSeparated[4].substring(12);
 								String cleanBody = requestSeparated[5].substring(8);
-								response = new Response(socket, id, cleanBody, "Upload File");
+								response = new Response(socket, id, cleanBody, "UPLOAD");
 							} else if (returnRequest.contains("Retrieving a file")) {
-								response = new Response(socket, id, "Retrieved File");
+								response = new Response(socket, id, "RETRIEVE");
 							}
+							response.setHeader(cleanHeader);
 							response.setFileName(cleanName);
 							response.setFileType(cleanType);
 							
