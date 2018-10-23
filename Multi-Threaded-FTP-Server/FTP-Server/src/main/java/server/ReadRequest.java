@@ -71,6 +71,11 @@ public class ReadRequest extends Thread {
 							} else if (returnRequest.contains("Retrieving a file")) {
 								response = new Response(socket, id, "Retrieved File");
 							}
+							if (c.contains("File name:")) {
+								response.setFileName(c);
+							} else if (c.contains("File type:")) {
+								response.setFileType(c);
+							}
 							FTP_service.submit(() -> {
 								try {
 									serverAcceptedFiles.acquire();
