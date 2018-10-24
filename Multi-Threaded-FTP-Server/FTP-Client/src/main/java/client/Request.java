@@ -17,8 +17,8 @@ public class Request extends Thread {
 	private String fileType = "";
 	private String fileContent = "";
 	private long fileSize = 0;
-	private String filePath = "C:\\Users\\Parker\\Workspaces\\ProcessModeling\\FTP-Web-Server\\Multi-Threaded-FTP-Server\\FTP-Server\\src\\main\\java\\serverFiles\\";
-	// "/home/priya/Personal Workspace/MultiServer/FTP-Web-Server/Multi-Threaded-FTP-Server/FTP-Server/src/main/java/serverFiles/"
+	//private String filePath = "C:\\Users\\Parker\\Workspaces\\ProcessModeling\\FTP-Web-Server\\Multi-Threaded-FTP-Server\\FTP-Server\\src\\main\\java\\serverFiles\\";
+	private String filePath = "/home/priya/Personal Workspace/MultiServer/FTP-Web-Server/Multi-Threaded-FTP-Server/FTP-Server/src/main/java/serverFiles/";
 	private static Object Locked = new Object();
 	private static Random gen = new Random();
 	boolean sessionEnded = false;
@@ -141,7 +141,11 @@ public class Request extends Thread {
 			fileType = ".txt";
 			request = pullFile();
 		}
-		System.out.println("Request: (" + this.getId() + ")" + request);
+		System.out.println("Request:" +  request);
 		return request;
 	}
+	public String getRequestID() {
+		return id;
+	}
+
 }

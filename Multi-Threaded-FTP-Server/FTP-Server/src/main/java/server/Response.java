@@ -13,24 +13,26 @@ import java.util.Random;
 public class Response extends Thread {
 	private static Object Locked = new Object();
 	private Random gen = new Random();
-	private String filePath = "C:\\Users\\Parker\\Workspaces\\ProcessModeling\\FTP-Web-Server\\Multi-Threaded-FTP-Server\\FTP-Server\\src\\main\\java\\serverFiles\\";
-
+	// sprivate String filePath =
+	// "C:\\Users\\Parker\\Workspaces\\ProcessModeling\\FTP-Web-Server\\Multi-Threaded-FTP-Server\\FTP-Server\\src\\main\\java\\serverFiles\\";
+	private String filePath = "/home/priya/Personal Workspace/MultiServer/FTP-Web-Server/Multi-Threaded-FTP-Server/FTP-Server/src/main/java/serverFiles/";
 	private String header = "";
 	private String fileName = "";
 	private String fileType = "";
 	private String responseType = "";
 	private String fileBody = "";
 	private Socket socket;
+	public boolean sessionEnded = false;
 	int id = 0;
 
-	//PULL / RETREIVE RESPONSE
+	// PULL / RETREIVE RESPONSE
 	public Response(Socket s, int id, String response) {
 		this.socket = s;
 		this.id = id;
 		this.responseType = response;
 	}
-	
-	//PUSH / UPLOAD RESPONSE
+
+	// PUSH / UPLOAD RESPONSE
 	public Response(Socket s, int id, String body, String response) {
 		this.socket = s;
 		this.id = id;
@@ -40,50 +42,55 @@ public class Response extends Thread {
 
 	@Override
 	public void run() {
-		synchronized (Locked) {
-			try {
-				sendResponse();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+//		synchronized (Locked) {
+		try {
+			sendResponse();
+			this.sessionEnded = true;
+			// System.out.println("id: " + id + " " + sessionEnded);
+		} catch (IOException e) {
+			e.printStackTrace();
+			// System.out.println("SEND RESPONSE DID NOT RUN....");
 		}
-		Locked = true;
+		// }
+//		/Locked = true;
 	}
 
 	public String makeResponse() {
 		String response = "";
-		
-		//Upload
-		if(responseType.equals("UPLOAD")) {
-			//Save fileBody to server
-			response = "Server Response Header: (" + id + ")- " + responseType + " "+ header + "\n\tFile name: " + fileName
-					+ "\n\tType: " + fileType +  "\nUpload Successful\n";
-			
+
+		// Upload
+		if (responseType.equals("UPLOAD")) {
+			// Save fileBody to server
+			response = "Server Response Header: " + header + "\n\tFile name: " + fileName + "\n\tType: " + fileType
+					+ "\nUpload Successful\n";
 		}
-		//Retrieve
+		// Retrieve
 		else {
-			//Find file, return body
+			// Find file, return body
 			File returnFile = new File(filePath + fileName);
-			if(returnFile.exists()) {
+			if (returnFile.exists()) {
 				BufferedReader br = null;
 				try {
 					br = new BufferedReader(new FileReader(returnFile));
-				} catch (FileNotFoundException e) {e.printStackTrace();}
-				
+				} catch (FileNotFoundException e) {
+					e.printStackTrace();
+				}
+
 				String st;
-				String readFileBody = null;
+				String readFileBody = "";
 				try {
 					while ((st = br.readLine()) != null) {
 						readFileBody += st;
-					 }
+					}
 					System.out.println("RETURN FILE BODY: " + readFileBody);
-				} catch (IOException e) {e.printStackTrace();} 
-			}
-			else {
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			} else {
 				System.out.println("FILE " + returnFile.getAbsolutePath() + " DOES NOT EXIST");
 			}
-			response = "Server Response Header: (" + id + ")- " + responseType + " " + header + "\n\tFile name: " + fileName
-					+ "\n\tType: " + fileType + "\n\tBody: "; //Get File Body here
+			response = "Server Response Header: " + header + "\n\tFile name: " + fileName + "\n\tType: " + fileType
+					+ "\n\tBody: " + fileBody; // Get File Body here
 		}
 		return response;
 	}
@@ -92,14 +99,14 @@ public class Response extends Thread {
 		OutputStream output = this.socket.getOutputStream();
 		output.write("\n".getBytes());
 		String response = makeResponse();
+		// System.out.println("Finished getting response: " + response);
 		output.write(response.getBytes());
-		// response = makeResponse();
 	}
-	
+
 	public String getHeader() {
 		return header;
 	}
-	
+
 	public void setHeader(String header) {
 		this.header = header;
 	}
@@ -119,6 +126,5 @@ public class Response extends Thread {
 	public void setFileType(String fileType) {
 		this.fileType = fileType;
 	}
-	
-	
+
 }
