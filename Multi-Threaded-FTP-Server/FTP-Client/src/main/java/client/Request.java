@@ -144,4 +144,9 @@ public class Request extends Thread {
 		System.out.println("Request: (" + this.getId() + ")" + request);
 		return request;
 	}
+	
+	
+	public String getRequestID() {
+		return id;
+	}
 }

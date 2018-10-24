@@ -83,7 +83,7 @@ public class Response extends Thread {
 				System.out.println("FILE " + returnFile.getAbsolutePath() + " DOES NOT EXIST");
 			}
 			response = "Server Response Header: (" + id + ")- " + responseType + " " + header + "\n\tFile name: " + fileName
-					+ "\n\tType: " + fileType + "\n\tBody: "; //Get File Body here
+					+ "\n\tType: " + fileType + "\n\tBody: \n"; //Get File Body here
 		}
 		return response;
 	}

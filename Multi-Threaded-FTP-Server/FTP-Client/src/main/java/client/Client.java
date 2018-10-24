@@ -8,15 +8,20 @@ import java.io.PrintStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Random;
+import java.util.Timer;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class Client {
 	private static ExecutorService fileService;
-	public static int max_Request = 20;
+	public static int max_Request = 200;
 	public static Random random = new Random();
 	public static BufferedReader sockReader;
+	public static HashMap<String, Long> hm = new HashMap<>();
 
 	public Client(int request) {
 		this.max_Request = request;
@@ -78,6 +83,7 @@ public class Client {
 		readResponse(sockIn);
 	}
 
+
 	public static String readResponse(InputStream sockIn) throws IOException {
 		String requestLine = "";
 		String line = "";
@@ -86,6 +92,9 @@ public class Client {
 		while (sockReader.ready()) {
 			c = sockReader.readLine();
 			System.out.println(c);
+			if(c.contains("Server Response Header")) {
+				stopRequestTime(c);
+			}
 			if (c.length() != 0) {
 				line = c;
 				requestLine += "\n";
@@ -95,15 +104,23 @@ public class Client {
 		return requestLine;
 	}
 
+	private static void stopRequestTime(String c) {
+		long currentTime = System.currentTimeMillis();
+		String[] test = c.split("\\(");
+		String[] test2 = test[1].split("\\)");
+		int requestID = Integer.parseInt(test2[0]);
+		long startTime = hm.get(requestID + "");
+		long timeTaken = currentTime - startTime;
+		System.out.println("REQUEST ID " + requestID + " TOOK " + timeTaken + " MILLISECONDS");
+	}
+
 	private static void fileRequest(Socket socket) throws UnknownHostException, IOException {
 		fileService = Executors.newFixedThreadPool(max_Request);
 		boolean run = true;
 		int counter = 0;
-
-		while (run)
-
-		{
+		while (run) {
 			Request r = new Request(socket);
+			hm.put(r.getRequestID(), System.currentTimeMillis());
 			fileService.submit(() -> r.run());
 			System.out.println();
 //			if (r.sessionEnded == true) {
