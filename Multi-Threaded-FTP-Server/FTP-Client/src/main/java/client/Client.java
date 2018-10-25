@@ -22,10 +22,10 @@ public class Client {
 	public Client(int request) {
 		this.max_Request = request;
 	}
-	public static void main(String[] args) throws UnknownHostException, IOException {
-		Client c = new Client(20);
-		c.run();
-	}
+//	public static void main(String[] args) throws UnknownHostException, IOException {
+//		Client c = new Client(20);
+//		c.run();
+//	}
 
 	public void run() throws UnknownHostException, IOException {
 		System.out.println("Client: make connection with Server");
