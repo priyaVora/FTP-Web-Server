@@ -22,17 +22,9 @@ public class Client {
 	public Client(int request) {
 		this.max_Request = request;
 	}
-	public static void main(String[] args) {
+	public static void main(String[] args) throws UnknownHostException, IOException {
 		Client c = new Client(20);
-		try {
-			c.run();
-		} catch (UnknownHostException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		c.run();
 	}
 
 	public void run() throws UnknownHostException, IOException {
